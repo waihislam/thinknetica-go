@@ -34,18 +34,32 @@ func (l *List) Push(e Elem) *Elem {
 	return &e
 }
 
+// String реализует интерфейс fmt.Stringer представляя список в виде строки.
+func (l *List) String() string {
+	el := l.root.next
+	var s string
+	for el != l.root {
+		s += fmt.Sprintf("%v ", el.Val)
+		el = el.next
+	}
+	if len(s) > 0 {
+		s = s[:len(s)-1]
+	}
+	return s
+}
+
 // Pop удаляет первый элемент списка.
-func (l *List) Pop() *Elem {
+func (l *List) Pop() *List {
 	if l.root.next == l.root {
 		// The list is empty
-		return nil
+		return l
 	}
 	first := l.root.next
 	l.root.next = first.next
 	first.next.prev = l.root
 	first.next = nil
 	first.prev = nil
-	return first
+	return l
 }
 
 // Reverse разворачивает список.
@@ -59,18 +73,4 @@ func (l *List) Reverse() *List {
 	}
 	l.root.next, l.root.prev = l.root.prev, l.root.next
 	return l
-}
-
-// String реализует интерфейс fmt.Stringer представляя список в виде строки.
-func (l *List) String() string {
-	el := l.root.next
-	var s string
-	for el != l.root {
-		s += fmt.Sprintf("%v ", el.Val)
-		el = el.next
-	}
-	if len(s) > 0 {
-		s = s[:len(s)-1]
-	}
-	return s
 }
