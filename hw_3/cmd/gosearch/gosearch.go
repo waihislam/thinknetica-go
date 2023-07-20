@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"sort"
-	"strings"
 	"thinknetica-go/hw_3/pkg/crawler"
 	"thinknetica-go/hw_3/pkg/crawler/spider"
 	ind "thinknetica-go/hw_3/pkg/index"
@@ -33,22 +32,19 @@ func main() {
 
 	}
 
-	// search the word
-	var res []string
-	for _, doc := range docs {
-		if strings.Contains(strings.ToLower(doc.Title), strings.ToLower(*kw)) {
-			res = append(res, doc.URL)
-		}
-	}
-
+	// binary search by index
 	index := ind.New()
 	index.AddDocuments(docs)
 	sort.Sort(index)
+	IDs := index.Search(*kw)
+	res := index.GetDocsByID(IDs)
 
 	// print result
 	if len(res) != 0 {
 		fmt.Printf("Found %v urls\n", len(res))
-		fmt.Println(res)
+		for _, doc := range res {
+			fmt.Printf("URL: %v, Title: %v\n", doc.URL, doc.Title)
+		}
 	} else {
 		fmt.Println("Nothing found")
 	}
