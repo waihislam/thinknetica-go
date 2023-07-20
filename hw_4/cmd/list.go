@@ -64,13 +64,21 @@ func (l *List) Pop() *List {
 
 // Reverse разворачивает список.
 func (l *List) Reverse() *List {
-	current := l.root
-	for current != nil {
-		next := current.next
-		current.next = current.prev
-		current.prev = next
-		current = next
+	if l.root.next == l.root || l.root.next.next == l.root {
+		return l
 	}
-	l.root.next, l.root.prev = l.root.prev, l.root.next
+
+	current := l.root.next
+
+	for current.next != l.root {
+		next := *current
+		current.next = next.prev
+		current.prev = next.next
+		current = next.next
+	}
+	next := *current
+	l.root.next = current
+	current.next, current.prev = next.prev, l.root
+
 	return l
 }
